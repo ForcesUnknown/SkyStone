@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.util.Range;
 @Disabled
 public abstract class RobotFunctions extends LinearOpMode
 {
+    private ElapsedTime runtime = new ElapsedTime();
+
     public void TurnMotorTime(DcMotor motor, double power, long time)
     {
         motor.setPower(power);
@@ -34,35 +36,54 @@ public abstract class RobotFunctions extends LinearOpMode
         servoData.servo.setPosition(servoData.startPosition);
     }
 
-    public void DriveForwardTime(DriveBaseData driveBaseData, double power, long time)
+    public void DriveFrontBackTime(DriveBaseData driveBaseData, double power, long time)
     {
-        driveBaseData.leftFront.setPower(power);
-        driveBaseData.rightFront.setPower(power);
-        driveBaseData.leftBack.setPower(power);
-        driveBaseData.rightBack.setPower(power);
+        driveBaseData.SetPower(power);
 
         sleep(time);
 
-        driveBaseData.leftFront.setPower(0);
-        driveBaseData.rightFront.setPower(0);
-        driveBaseData.leftBack.setPower(0);
-        driveBaseData.rightBack.setPower(0);
+        driveBaseData.SetPower(0);
     }
 
-    public void DriveForwardDistance(DriveBaseData driveBaseData, double power, double distance, double timeoutRedundancy)
+    public void DriveFrontBackDistance(DriveBaseData driveBaseData, double power, double distance, double timeoutRedundancy)
     {
-        driveBaseData.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        int newPositionLeftFront = (int)(driveBaseData.leftFront.getCurrentPosition() + Math.round(distance * driveBaseData.ticksPerCentimeter));
+        int newPositionRightFront = (int)(driveBaseData.rightFront.getCurrentPosition() + Math.round(distance * driveBaseData.ticksPerCentimeter));
+        int newPositionLeftBack = (int)(driveBaseData.leftBack.getCurrentPosition() + Math.round(distance * driveBaseData.ticksPerCentimeter));
+        int newPositionRightBack = (int)(driveBaseData.rightBack.getCurrentPosition() + Math.round(distance * driveBaseData.ticksPerCentimeter));
 
-        driveBaseData.leftFront.setPower(power);
-        driveBaseData.rightFront.setPower(power);
-        driveBaseData.leftBack.setPower(power);
-        driveBaseData.rightBack.setPower(power);
+        driveBaseData.SetTargetPositions(newPositionLeftFront, newPositionRightFront, newPositionLeftBack, newPositionRightBack);
+
+        driveBaseData.SetMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        driveBaseData.SetPower(Math.abs(power));
+
+        runtime.reset();
+
+        while (opModeIsActive() && runtime.time() < timeoutRedundancy && (driveBaseData.leftFront.isBusy() && driveBaseData.rightFront.isBusy() && driveBaseData.leftBack.isBusy() && driveBaseData.rightBack.isBusy()))
+        {
+            telemetry.addLine("Left Front: Running");
+            telemetry.addLine("Right Front: Running");
+            telemetry.addLine("Left Back: Running");
+            telemetry.addLine("Right Back: Running");
+
+            telemetry.update();
+        }
+
+        telemetry.addLine("Left Front: Running");
+        telemetry.addLine("Right Front: Running");
+        telemetry.addLine("Left Back: Running");
+        telemetry.addLine("Right Back: Running");
+
+        telemetry.update();
+
+        driveBaseData.SetPower(0);
+
+        driveBaseData.SetMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-        driveBaseData.leftFront.setPower(0);
-        driveBaseData.rightFront.setPower(0);
-        driveBaseData.leftBack.setPower(0);
-        driveBaseData.rightBack.setPower(0);
+        sleep(100);
+
     }
 
 }

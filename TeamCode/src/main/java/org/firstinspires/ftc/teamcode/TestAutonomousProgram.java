@@ -32,7 +32,7 @@ public class TestAutonomousProgram extends RobotFunctions
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         driveBaseData = new DriveBaseData(hardwareMap.get(DcMotor.class, "LeftFront"), hardwareMap.get(DcMotor.class, "RightFront"),
-                hardwareMap.get(DcMotor.class, "LeftBack"), hardwareMap.get(DcMotor.class, "RightBack"), 50);
+                hardwareMap.get(DcMotor.class, "LeftBack"), hardwareMap.get(DcMotor.class, "RightBack"), 50, false);
 
         testServo = new ServoData(hardwareMap.get(Servo.class, "ServoA"), 0.0, 1.0);
 
