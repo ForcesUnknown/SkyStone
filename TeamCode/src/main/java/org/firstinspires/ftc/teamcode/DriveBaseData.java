@@ -15,7 +15,7 @@ public class DriveBaseData {
     public double ticksPerCentimeter;
     public int encoderTicksPerRotation; // I believe its is 28 for rev and 1440 for Tetrix but i could be wrong
 
-    public DriveBaseData(DcMotor leftFront, DcMotor rightFront, DcMotor leftBack, DcMotor rightBack, double wheelDiameter, Boolean tetrix)
+    public DriveBaseData(DcMotor leftFront, DcMotor rightFront, DcMotor leftBack, DcMotor rightBack, double wheelDiameter, boolean tetrix)
     {
         this.encoderTicksPerRotation = tetrix? 1440 : 28;
         this.wheelCircumference = wheelDiameter * Math.PI;
@@ -40,6 +40,14 @@ public class DriveBaseData {
         rightBack.setPower(power);
     }
 
+    public void SetPower(double powerLF, double powerRF, double powerLB, double powerRB)
+    {
+        leftFront.setPower(powerLF);
+        rightFront.setPower(powerRF);
+        leftBack.setPower(powerLB);
+        rightBack.setPower(powerRB);
+    }
+
     public void SetMode(DcMotor.RunMode runMode)
     {
         leftFront.setMode(runMode);
@@ -48,11 +56,19 @@ public class DriveBaseData {
         rightBack.setMode(runMode);
     }
 
-    public void SetTargetPositions(int leftFront, int rightFront, int leftBack, int rightBack)
+    public void SetTargetPosition(int position)
     {
-        this.leftFront.setTargetPosition(leftFront);
-        this.rightFront.setTargetPosition(rightFront);
-        this.leftBack.setTargetPosition(leftBack);
-        this.rightBack.setTargetPosition(rightBack);
+        leftFront.setTargetPosition(position);
+        rightFront.setTargetPosition(position);
+        leftBack.setTargetPosition(position);
+        rightBack.setTargetPosition(position);
+    }
+
+    public void SetTargetPosition(int positionLF, int positionRF, int positionLB, int positionRB)
+    {
+        leftFront.setTargetPosition(positionLF);
+        rightFront.setTargetPosition(positionRF);
+        leftBack.setTargetPosition(positionLB);
+        rightBack.setTargetPosition(positionRB);
     }
 }
